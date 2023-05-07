@@ -1,4 +1,4 @@
-import styeld from 'styled-components'
+import styled from 'styled-components'
 
 const Login = styled.div`
 
