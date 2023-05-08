@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 function Search() {
   return (
-    <div>
+    <div style={{ position: 'relative' }}>
+      <SearchOutlined style={{ position: 'absolute', top: '17%', right: '5%', fontSize: '30px' }} />
       <SearchInput placeholder='검색어를 입력해주세요' type='text' />
-      <SearchOutlined />
     </div>
   );
 }
@@ -17,5 +17,11 @@ const SearchInput = styled.input`
   height: 40px;
   width: 338px;
   color: #fff;
+  padding-left: 20px;
+  ::placeholder {
+    color: #fff;
+    padding-left: 20px;
+    font-size: 15px;
+  }
 `;
 export default Search;
