@@ -15,7 +15,6 @@ function Header() {
     uploadedItems,
     handleLoginClick,
     handleSignupClick,
-    handleUploadClick,
     handleSwitch,
     handleLogin,
     handleLogout,
@@ -27,33 +26,45 @@ function Header() {
     setSignupModalOpen,
     setUploadModalOpen,
   } = useAppLogic();
+
   return (
     <HeaderContainer>
       <HeaderItemBox>
         <Items>PIC TOK</Items>
         <Items>
-          <LoginModal
-            open={loginModalOpen}
-            onClose={() => setLoginModalOpen(false)}
-            onLogin={handleLogin}
-            onSwitch={handleSwitch}
-          />
-
-          <SignupModal
-            open={signupModalOpen}
-            onClose={() => setSignupModalOpen(false)}
-            onSignup={handleSignup}
-            onSwitch={handleSwitch}
-          />
-
-          {!isLoggedIn ? <p onClick={handleLoginClick}>로그인</p> : <p onClick={handleLogout}>로그아웃</p>}
-          {!isLoggedIn && <p onClick={handleSignupClick}>회원가입</p>}
-          <p onClick={handleUploadClick}>글쓰기</p>
-          <UploadModal open={uploadModalOpen} onClose={() => setUploadModalOpen(false)} onUpload={handleUpload} />
-          <UploadedItemsList uploadedItems={uploadedItems} onDelete={handleDelete} onEdit={handleEdit} />
+          {!isLoggedIn ? (
+            <>
+              <p onClick={handleLoginClick}>로그인</p>
+              <p onClick={handleSignupClick}>회원가입</p>
+            </>
+          ) : (
+            <p onClick={handleLogout}>로그아웃</p>
+          )}
           <p>검색</p>
         </Items>
       </HeaderItemBox>
+      <LoginModal
+        open={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+        onLogin={handleLogin}
+        onSwitch={handleSwitch}
+      />
+      <SignupModal
+        open={signupModalOpen}
+        onClose={() => setSignupModalOpen(false)}
+        onSignup={handleSignup}
+        onSwitch={handleSwitch}
+      />
+      <UploadModal
+        open={uploadModalOpen}
+        onClose={() => setUploadModalOpen(false)}
+        onUpload={handleUpload}
+      />
+      <UploadedItemsList
+        uploadedItems={uploadedItems}
+        onDelete={handleDelete}
+        onEdit={handleEdit}
+      />
     </HeaderContainer>
   );
 }
@@ -62,10 +73,12 @@ const HeaderContainer = styled.div`
   background: gray;
   padding: 0px 300px;
 `;
+
 const HeaderItemBox = styled.div`
   display: flex;
   justify-content: space-between;
 `;
+
 const Items = styled.div`
   display: flex;
   align-items: center;
@@ -76,4 +89,5 @@ const Items = styled.div`
     cursor: pointer;
   }
 `;
+
 export default Header;

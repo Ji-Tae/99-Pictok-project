@@ -7,4 +7,11 @@ const getPictures = async () => {
   return response.data;
 };
 
-export { getPictures };
+const signupPost = async (username, password, confirmPassword) => {
+  await axios.post(`${process.env.REACT_APP_SERVER_URL}/signup`, {username, password, confirmPassword})
+}
+
+const loginPost = async (username, password) => {
+  await axios.post(`${process.env.REACT_APP_SERVER_URL}/login`, {username, password})
+}
+export { getPictures, signupPost, loginPost };

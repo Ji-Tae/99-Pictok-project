@@ -24,11 +24,12 @@ export const useAppLogic = () => {
   const handleUploadClick = () => {
     if (!isLoggedIn) {
       alert('로그인을 해주세요');
+      console.log(isLoggedIn)
     } else {
-      setLoginModalOpen(false);
-      setSignupModalOpen(false);
       setUploadModalOpen(true);
+      console.log(isLoggedIn)
     }
+
   };
 
   const handleSwitch = () => {
@@ -41,53 +42,55 @@ export const useAppLogic = () => {
     }
   };
 
-  const handleLogin = async (username, password) => {
-    // const response = await axios.post('/login', {
-    //   nickname: username,
-    //   password: password,
-    // });
-    console.log(`로그인: ${username}, ${password}`);
-    setIsLoggedIn(true);
-    setLoginModalOpen(false);
+  const handleLogin = async () => {
+    try {
+      alert("로그인 성공");
+      setIsLoggedIn(true);
+      setLoginModalOpen(false);
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("로그인 실패");
+    }
   };
 
-  const handleLogout = () => {
-    // 로그아웃 처리
-    setIsLoggedIn(false);
+  const handleSignup = async () => {
+    try {
+      alert("회원가입 성공");
+      setSignupModalOpen(false);
+    } catch (error) {
+      console.error("Error during signup:", error);
+      alert("회원가입 실패");
+    }
   };
 
-  const handleSignup = (username, password) => {
-    // 회원가입 처리
-    console.log(`회원가입: ${username}, ${password}`);
-    setSignupModalOpen(false);
+  const handleLogout = async () => {
+    try {
+      setIsLoggedIn(false);
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
   };
 
   const handleUpload = async ({ url, title, description, file }) => {
-    // 업로드 처리
     if (!file) {
-      alert('파일을 선택해주세요.');
+      alert("파일을 선택해주세요.");
       return;
     }
-    const API_URL = '/uploads/upload';
-    const formData = new FormData();
-    formData.append('url', url);
-    formData.append('title', title);
-    formData.append('description', description);
-    formData.append('image', file);
 
     try {
-      const response = await axios.post(API_URL, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      console.log(response.data);
+      // 업로드 데이터를 JSON Server에 저장합니다.
+      const payload = {
+        url,
+        title,
+        description,
+      };
+      const response = await axios.post("/uploads", payload);
+
+      setUploadedItems([...uploadedItems, { ...payload, id: response.data.id }]);
+      setUploadModalOpen(false);
     } catch (error) {
-      console.error('Error uploading file:', error);
+      console.error("Error uploading file:", error);
     }
-
-    console.log(`업로드: ${url}, ${title}, ${description}`);
-    setUploadModalOpen(false);
-
-    setUploadedItems([...uploadedItems, { url, title, description, file }]);
   };
 
   const handleDelete = (index) => {
@@ -115,6 +118,7 @@ export const useAppLogic = () => {
     };
 
     fetchData();
+
   }, []);
 
   return {
