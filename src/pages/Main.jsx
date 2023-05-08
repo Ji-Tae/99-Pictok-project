@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout } from '../style/Layout';
 import styled from 'styled-components';
 import NewPicArea from '../components/NewPicArea';
+import BestPicArea from '../components/BestPicArea';
 
 function Main() {
   return (
@@ -17,13 +18,14 @@ function Main() {
       </SharButtonContainer>
 
       <NewPicArea />
+      <BestPicArea />
     </Layout>
   );
 }
 
 const MainPic = styled.div`
   width: 100%;
-  height: 400px;
+  height: 600px;
   background-color: aliceblue;
   img {
     width: 100%;
@@ -46,7 +48,7 @@ const ShareButton = styled.button`
   border-radius: 15px;
   width: 230px;
   height: 60px;
-  background-color: #7e46d8;
+  background-color: #2563c1;
   color: #fff;
   cursor: pointer;
   &:hover {
