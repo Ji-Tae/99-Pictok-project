@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
+import axios from 'axios';
 import styled from "styled-components";
 import { useAppLogic } from "../components/hooks/useAppLogic";
 
@@ -28,7 +29,11 @@ export const SignupModal = ({ open, onClose, onSwitch }) => {
             // Invalidate query cache
             queryClient.invalidateQueries("currentUser");
         },
+        onError: (error) => {
+            setErrorMessage(error.response.data.errorMessage);
+        }
     });
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -39,30 +44,15 @@ export const SignupModal = ({ open, onClose, onSwitch }) => {
         }
 
         try {
-            const response = await fetch("/signup", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    authcode: "557685",
-                },
-                body: JSON.stringify({
-                    nickname: username,
-                    password: password,
-                    confirm: confirmPassword,
-                }),
+            await signupMutation.mutateAsync({
+                authcode: "557685",
+                nickname: username,
+                password: password,
+                confirm: confirmPassword,
             });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                // 회원가입 성공
-                setErrorMessage("");
-                signupMutation.mutate();
+            if (!signupMutation.isError) {
                 onClose();
-                alert(data.message);
-            } else {
-                // 회원가입 실패
-                setErrorMessage(data.errorMessage);
+                alert("회원 가입에 성공하였습니다.");
             }
         } catch (error) {
             // 예외 케이스

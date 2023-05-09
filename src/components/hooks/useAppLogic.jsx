@@ -9,6 +9,8 @@ export const useAppLogic = () => {
 
   const [uploadedItems, setUploadedItems] = useState([]);
 
+  const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+
   const handleLoginClick = () => {
     setLoginModalOpen(true);
     setSignupModalOpen(false);
@@ -35,25 +37,43 @@ export const useAppLogic = () => {
     }
   };
 
-  const handleLogin = async (username, password) => {
-    // const response = await axios.post('/login', {
-    //   nickname: username,
-    //   password: password,
-    // });
-    console.log(`로그인: ${username}, ${password}`);
-    setIsLoggedIn(true);
-    setLoginModalOpen(false);
+  const handleLogin = async (nickname, password) => {
+    try {
+      const response = await axios.post(`${SERVER_URL}/login`, {
+        nickname: nickname,
+        password: password,
+      });
+      if(response.data.message) {
+        setIsLoggedIn(true);
+        setLoginModalOpen(false);
+      } else if(response.data.errorMessage) {
+        alert(response.data.errorMessage);
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+    }
   };
 
   const handleLogout = () => {
-    // 로그아웃 처리
     setIsLoggedIn(false);
   };
 
-  const handleSignup = (username, password) => {
-    // 회원가입 처리
-    console.log(`회원가입: ${username}, ${password}`);
-    setSignupModalOpen(false);
+  const handleSignup = async (authcode, nickname, password, confirm) => {
+    try {
+      const response = await axios.post(`${SERVER_URL}/signup`, {
+        authcode: authcode,
+        nickname: nickname,
+        password: password,
+        confirm: confirm,
+      });
+      if(response.data.message) {
+        setSignupModalOpen(false);
+      } else if(response.data.errorMessage) {
+        alert(response.data.errorMessage);
+      }
+    } catch (error) {
+      console.error('Error during signup:', error);
+    }
   };
 
   const handleUpload = async ({ url, title, description, file }) => {
