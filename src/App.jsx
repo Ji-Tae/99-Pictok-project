@@ -11,7 +11,7 @@ function App() {
   } = useAppLogic();
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <>
       <Header
         isLoggedIn={isLoggedIn}
         handleLoginClick={handleLoginClick}
@@ -19,7 +19,7 @@ function App() {
       />
       <Main />
       <Footer />
-    </QueryClientProvider >
+    </ >
   );
 }
 
