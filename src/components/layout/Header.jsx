@@ -15,7 +15,6 @@ function Header() {
     handleLoginClick,
     handleSignupClick,
     handleSwitch,
-    handleLogin,
     handleLogout,
     handleSignup,
     handleUpload,
@@ -37,14 +36,12 @@ function Header() {
           <LoginModal
             open={loginModalOpen}
             onClose={() => setLoginModalOpen(false)}
-            onLogin={handleLogin}
             onSwitch={handleSwitch}
           />
 
           <SignupModal
             open={signupModalOpen}
             onClose={() => setSignupModalOpen(false)}
-            onSignup={handleSignup}
             onSwitch={handleSwitch}
           />
 

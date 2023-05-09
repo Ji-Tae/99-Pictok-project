@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useAppLogic } from '../components/hooks/useAppLogic';
+import { useMutation } from "react-query";
+import { signupPost, emailPost } from "../api/query";
 
 export const Modal = ({ open, onClose, cancelButton, children }) => {
     if (!open) return null;
@@ -15,55 +16,42 @@ export const Modal = ({ open, onClose, cancelButton, children }) => {
 };
 
 export const SignupModal = ({ open, onClose, onSwitch }) => {
-    const [username, setUsername] = useState("");
+    const [nickname, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const [confirm, setConfirm] = useState("");
     const [email, setEmail] = useState("");
-    const [verificationCode, setVerificationCode] = useState("");
-    
-    const { handleSignup, handleEmailVerification, errorMessage, setErrorMessage } = useAppLogic(); 
+    const [authcode, setAuthCode] = useState("");
+    const [errorMessage, setErrorMessage] = useState('');
 
-    const handleVerificationRequest = async () => {
-        try {
-            await handleEmailVerification(email);
-        } catch (error) {
-            setErrorMessage("인증 코드를 요청하는 도중 문제가 발생했습니다.");
-        }
-    };
+    const signupMutation = useMutation(signupPost, {
+        onSuccess: () => {
+            onClose();
+        }, onError: (error) => {
+            if (error.response) {
+                setErrorMessage(error.response.data.errorMessage);
+            }
+        },
+    });
 
-    const handleSubmit = async (e) => {
+    const authcodeMution = useMutation()
+
+    const handleEmailSubmit = () => authcodeMution.mutate(emailPost({ email }))
+
+    const handleSignupSubmit = (e) => {
         e.preventDefault();
-        if (password !== confirmPassword) {
-            setErrorMessage("비밀번호가 일치하지 않습니다.");
-            return;
-        }
+        signupMutation.mutate(signupPost({ nickname, password, confirm, authcode }))
 
-        if (!handleEmailVerification.verify(verificationCode)) {
-            setErrorMessage("인증 코드가 올바르지 않습니다.");
-            return;
-        }
-
-        try {
-            await handleSignup({ 
-                username, 
-                password, 
-                confirmPassword, 
-                authcode: verificationCode, 
-              });  
-        } catch (error) {
-            setErrorMessage("서버와의 연결이 원활하지 않습니다.");
-        }
-    };
-
+    }
     return (
         <Modal open={open} onClose={onClose} cancelButton>
             <ModalTitle>회원가입</ModalTitle>
-            <form onSubmit={handleSubmit}>
+            {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+            <form onSubmit={handleSignupSubmit}>
                 <InputLabel htmlFor="username">아이디</InputLabel>
                 <ModalInput
                     type="text"
                     id="username"
-                    value={username}
+                    value={nickname}
                     onChange={(e) => setUsername(e.target.value)}
                 />
                 <InputLabel htmlFor="email">이메일</InputLabel>
@@ -73,13 +61,13 @@ export const SignupModal = ({ open, onClose, onSwitch }) => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
-                <VerificationButton onClick={handleVerificationRequest}>인증 코드 요청</VerificationButton>
-                <InputLabel htmlFor="verificationCode">인증 코드</InputLabel>
+                <VerificationButton onClick={handleEmailSubmit}>인증 코드 요청</VerificationButton>
+                <InputLabel htmlFor="authcode">인증 코드</InputLabel>
                 <ModalInput
                     type="text"
-                    id="verificationCode"
-                    value={verificationCode}
-                    onChange={(e) => setVerificationCode(e.target.value)}
+                    id="authcode"
+                    value={authcode}
+                    onChange={(e) => setAuthCode(e.target.value)}
                 />
                 <InputLabel htmlFor="password">비밀번호</InputLabel>
                 <ModalInput
@@ -88,16 +76,15 @@ export const SignupModal = ({ open, onClose, onSwitch }) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <InputLabel htmlFor="confirmPassword">비밀번호 확인</InputLabel>
+                <InputLabel htmlFor="confirm">비밀번호 확인</InputLabel>
                 <ModalInput
                     type="password"
-                    id="confirmPassword"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    id="confirm"
+                    value={confirm}
+                    onChange={(e) => setConfirm(e.target.value)}
                 />
-                <SignupButton type="submit">회원가입</SignupButton>
+                <SignupButton>회원가입</SignupButton>
             </form>
-            {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
             <SwitchContainer>
                 <span>회원이신가요? </span>
                 <SwitchButton onClick={onSwitch}>로그인</SwitchButton>
