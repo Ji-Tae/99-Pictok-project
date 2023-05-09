@@ -5,6 +5,7 @@ import { useAppLogic } from '../hooks/useAppLogic.jsx';
 import { SignupModal } from '../../modals/signup.jsx';
 import { UploadModal } from '../../modals/upload.jsx';
 import UploadedItemsList from '../uploaded.jsx';
+import Search from '../Search';
 
 function Header() {
   const {
@@ -30,7 +31,13 @@ function Header() {
   return (
     <HeaderContainer>
       <HeaderItemBox>
-        <Items>PIC TOK</Items>
+        <Items>
+          <TitleItem>PIC TOK</TitleItem>
+        </Items>
+
+        <Items>
+          <Search />
+        </Items>
         <Items>
           <LoginModal
             open={loginModalOpen}
@@ -59,8 +66,10 @@ function Header() {
 }
 
 const HeaderContainer = styled.div`
-  background: gray;
-  padding: 0px 300px;
+  padding: 10px 0px;
+  background: #2563c1;
+  padding-left: 300px;
+  padding-right: 300px;
 `;
 const HeaderItemBox = styled.div`
   display: flex;
@@ -71,9 +80,15 @@ const Items = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  color: #fff;
   p {
     margin: 10px;
     cursor: pointer;
   }
+`;
+const TitleItem = styled.div`
+  font-size: 25px;
+  font-weight: bold;
+  color: #fff;
 `;
 export default Header;
