@@ -3,16 +3,16 @@ import PicCard from './PicCard';
 import styled from 'styled-components';
 import Text from './Text';
 import { useQuery } from 'react-query';
-import { useGetPicturesQuery } from '../api/query';
-import { useAppLogic } from '../components/hooks/useAppLogic.jsx';
+import { getNewPictures } from '../api/query';
+// import { useAppLogic } from '../components/hooks/useAppLogic.jsx';
 
 function PicArea() {
-  const {
-    deleteItemMutation,
-    editItemMutation,
-  } = useAppLogic();
+  // const {
+  //   deleteItemMutation,
+  //   editItemMutation,
+  // } = useAppLogic();
 
-  const { isLoading, isError, data } = useQuery('items', useGetPicturesQuery);
+  const { isLoading, isError, data } = useQuery('newposts', getNewPictures);
 
   if (isLoading) {
     return <h3>사진 가져오는 중 입니다....</h3>;
@@ -32,8 +32,8 @@ function PicArea() {
               key={card.id}
               width={20}
               card={card}
-              onDelete={deleteItemMutation.mutate}
-              onEdit={editItemMutation.mutate}
+              // onDelete={deleteItemMutation.mutate}
+              // onEdit={editItemMutation.mutate}
             />
           );
         })}
