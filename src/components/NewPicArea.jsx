@@ -13,7 +13,7 @@ function PicArea() {
   // } = useAppLogic();
 
   const { isLoading, isError, data } = useQuery('newposts', getNewPictures);
-
+  const newPicList = data?.data;
   if (isLoading) {
     return <h3>사진 가져오는 중 입니다....</h3>;
   }
@@ -31,7 +31,7 @@ function PicArea() {
         새로 올라온 사진을 구경해보세요!
       </Text>
       <PicContainer>
-        {data?.data?.map((card) => {
+        {newPicList?.map((card) => {
           return <PicCard key={card.id} width={308} card={card} />;
         })}
       </PicContainer>
