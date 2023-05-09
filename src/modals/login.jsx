@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useMutation } from "react-query";
+import { loginPost } from "../api/query";
 
 export const Modal = ({ open, onClose, cancelButton, children }) => {
     if (!open) return null;
@@ -18,15 +20,29 @@ export const LoginModal = ({ open, onClose, onLogin, onSwitch }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleLogin = () => {
-        // 로그인 처리
-        onLogin(username, password);
-        onClose();
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const loginMutation = useMutation(loginPost, {
+        onSuccess: (data) => {
+            localStorage.setItem('token', data.token);
+            onClose();
+        },
+        onError: (error) => {
+            if (error.response) {
+                setErrorMessage(error.response.data.errorMessage);
+            }
+        }
+    });
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        loginMutation.mutate({ nickname: username, password });
     };
 
     return (
         <Modal open={open} onClose={onClose} cancelButton>
             <ModalTitle>로그인</ModalTitle>
+            {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
             <InputLabel htmlFor="username">아이디</InputLabel>
             <ModalInput
                 type="text"
@@ -128,4 +144,10 @@ const CloseButton = styled.button`
   cursor: pointer;
   padding: 5px;
   margin-top: 20px;
+`;
+
+const ErrorMessage = styled.div`
+color: red; 
+font-size: 14px; 
+margin-bottom: 10px;
 `;

@@ -1,13 +1,21 @@
 import axios from 'axios';
 
-const signupPost = async ({ username, password, confirmPassword }) => {
-  await axios.post(`${process.env.REACT_APP_SERVER_URL}/signup`, { username, password, confirmPassword });
+const signupPost = async ({ authcode, nickname, password, confirm }) => {
+  const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/signup`, {
+    nickname, password, confirm, authcode
+  });
+  return response.data
 };
 
-const loginPost = async ({ username, password }) => {
-  await axios.post(`${process.env.REACT_APP_SERVER_URL}/login`, { username, password });
+const emailPost = async ({ email }) => {
+  const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/authMail`, { email })
+  return response.data
+}
+
+const loginPost = async ({ nickname, password }) => {
+  await axios.post(`${process.env.REACT_APP_SERVER_URL}/login`, { nickname, password });
 };
- 
+
 //최신사진 조회
 const getNewPictures = async () => {
   const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/newposts`, { withCredentials: true });
@@ -18,4 +26,4 @@ const getBestPictures = async () => {
 
   return response.data;
 };
-export { getNewPictures, getBestPictures, signupPost, loginPost };
+export { getNewPictures, getBestPictures, signupPost, loginPost, emailPost };
