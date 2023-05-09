@@ -7,12 +7,7 @@ import { UploadModal } from '../modals/upload.jsx';
 import BestPicArea from '../components/BestPicArea';
 
 const Main = () => {
-  const { isLoggedIn,
-    handleUploadClick,
-    uploadModalOpen,
-    setUploadModalOpen,
-    handleUpload,
-  } = useAppLogic();
+  const { handleUploadClick, uploadModalOpen, setUploadModalOpen, handleUpload } = useAppLogic();
 
   return (
     <Layout>
@@ -25,25 +20,18 @@ const Main = () => {
       <SharButtonContainer>
         <ShareButton
           onClick={() => {
-              handleUploadClick();
-          }}
-        >
+            handleUploadClick();
+          }}>
           사진 공유하기
         </ShareButton>
       </SharButtonContainer>
 
       <NewPicArea />
-      {/* 추가 */}
-      <UploadModal
-        open={uploadModalOpen}
-        onClose={() => setUploadModalOpen(false)}
-        onUpload={handleUpload}
-      /> 
+      <UploadModal open={uploadModalOpen} onClose={() => setUploadModalOpen(false)} onUpload={handleUpload} />
       <BestPicArea />
     </Layout>
   );
 };
-
 
 const MainPic = styled.div`
   width: 100%;
@@ -79,7 +67,6 @@ const ShareButton = styled.button`
   &:active {
     filter: brightness(90%);
   }
-  onClick={handleUploadClick}
 `;
 
 export default Main;

@@ -4,7 +4,6 @@ import { LoginModal } from '../../modals/login.jsx';
 import { useAppLogic } from '../hooks/useAppLogic.jsx';
 import { SignupModal } from '../../modals/signup.jsx';
 import { UploadModal } from '../../modals/upload.jsx';
-import UploadedItemsList from '../uploaded.jsx';
 import Search from '../Search';
 
 function Header() {
@@ -16,7 +15,6 @@ function Header() {
     uploadedItems,
     handleLoginClick,
     handleSignupClick,
-    handleUploadClick,
     handleSwitch,
     handleLogin,
     handleLogout,
@@ -56,7 +54,6 @@ function Header() {
           {!isLoggedIn ? <p onClick={handleLoginClick}>로그인</p> : <p onClick={handleLogout}>로그아웃</p>}
           {!isLoggedIn && <p onClick={handleSignupClick}>회원가입</p>}
           <UploadModal open={uploadModalOpen} onClose={() => setUploadModalOpen(false)} onUpload={handleUpload} />
-          <UploadedItemsList uploadedItems={uploadedItems} onDelete={handleDelete} onEdit={handleEdit} />
         </Items>
       </HeaderItemBox>
     </HeaderContainer>
