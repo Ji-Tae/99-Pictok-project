@@ -78,7 +78,7 @@ export const useAppLogic = () => {
 
   const handleEmailVerification = async (email) => {
     try {
-      await axios.post('/email-verification', { email });
+      await axios.post('/authMail', { email });
       // email verification success
     } catch (error) {
       // handle error
