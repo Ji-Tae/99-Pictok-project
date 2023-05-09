@@ -2,8 +2,17 @@ import React from 'react';
 import { Layout } from '../style/Layout';
 import styled from 'styled-components';
 import NewPicArea from '../components/NewPicArea';
+import { useAppLogic } from '../components/hooks/useAppLogic';
+import { UploadModal } from '../modals/upload.jsx';
 
-function Main() {
+const Main = () => {
+  const { isLoggedIn,
+    handleUploadClick,
+    uploadModalOpen,
+    setUploadModalOpen,
+    handleUpload,
+  } = useAppLogic();
+
   return (
     <Layout>
       <MainPic>
@@ -13,13 +22,26 @@ function Main() {
         />
       </MainPic>
       <SharButtonContainer>
-        <ShareButton>사진 공유하기</ShareButton>
+        <ShareButton
+          onClick={() => {
+              handleUploadClick();
+          }}
+        >
+          사진 공유하기
+        </ShareButton>
       </SharButtonContainer>
 
       <NewPicArea />
+      {/* 추가 */}
+      <UploadModal
+        open={uploadModalOpen}
+        onClose={() => setUploadModalOpen(false)}
+        onUpload={handleUpload}
+      /> 
     </Layout>
   );
-}
+};
+
 
 const MainPic = styled.div`
   width: 100%;
@@ -55,6 +77,7 @@ const ShareButton = styled.button`
   &:active {
     filter: brightness(90%);
   }
+  onClick={handleUploadClick}
 `;
 
 export default Main;
