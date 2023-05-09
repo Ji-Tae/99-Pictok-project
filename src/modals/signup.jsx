@@ -44,7 +44,12 @@ export const SignupModal = ({ open, onClose, onSwitch }) => {
         }
 
         try {
-            await handleSignup({ username, password, email });  
+            await handleSignup({ 
+                username, 
+                password, 
+                confirmPassword, 
+                authcode: verificationCode, 
+              });  
         } catch (error) {
             setErrorMessage("서버와의 연결이 원활하지 않습니다.");
         }
@@ -107,7 +112,7 @@ const ModalContainer = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   width: 400px;
-  height: 600px;
+  height: auto;
   background-color: white;
   display: flex;
   flex-direction: column;

@@ -58,9 +58,15 @@ export const useAppLogic = () => {
     setIsLoggedIn(false);
   };
 
-  const handleSignup = async ({ username, password }) => {
+  const handleSignup = async ({ username, password, confirmPassword, authcode }) => {
     try {
-      const response = await axios.post('/signup', { username, password });
+      const response = await axios.post('/signup', {
+        authcode,
+        nickname: username,
+        password,
+        confirm: confirmPassword,
+      });
+
       // signup success
       setSignupModalOpen(false);
       setLoginModalOpen(true);
@@ -86,6 +92,8 @@ export const useAppLogic = () => {
         setErrorMessage("이메일 주소를 확인해주세요.");
       } else if (error.response.status === 400) {
         setErrorMessage("인증 코드 발송에 실패하였습니다.");
+      } else if (error.response.status === 410) {
+        setErrorMessage("이메일의 형식이 일치하지 않습니다.");
       } else {
         setErrorMessage("서버와의 연결이 원활하지 않습니다.");
       }
