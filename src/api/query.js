@@ -2,9 +2,13 @@
 import axios from 'axios';
 
 //최신사진 조회
-const getPictures = async () => {
-  const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/posts`);
+const getNewPictures = async () => {
+  const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/newposts`, { withCredentials: true });
+  return response.data;
+};
+const getBestPictures = async () => {
+  const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/bestposts`, { withCredentials: true });
   return response.data;
 };
 
-export { getPictures };
+export { getNewPictures, getBestPictures };
