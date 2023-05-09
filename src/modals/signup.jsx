@@ -26,7 +26,8 @@ export const SignupModal = ({ open, onClose, onSwitch }) => {
     const signupMutation = useMutation(signupPost, {
         onSuccess: () => {
             onClose();
-        }, onError: (error) => {
+        },
+        onError: (error) => {
             if (error.response) {
                 setErrorMessage(error.response.data.errorMessage);
             }
