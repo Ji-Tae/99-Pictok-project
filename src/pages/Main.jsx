@@ -24,11 +24,7 @@ const Main = () => {
       <SharButtonContainer>
         <ShareButton
           onClick={() => {
-            if (!isLoggedIn) {
-              alert("로그인이 필요한 서비스입니다.");
-            } else {
               handleUploadClick();
-            }
           }}
         >
           사진 공유하기
