@@ -55,10 +55,8 @@ function Header() {
 
           {!isLoggedIn ? <p onClick={handleLoginClick}>로그인</p> : <p onClick={handleLogout}>로그아웃</p>}
           {!isLoggedIn && <p onClick={handleSignupClick}>회원가입</p>}
-          <p onClick={handleUploadClick}>글쓰기</p>
           <UploadModal open={uploadModalOpen} onClose={() => setUploadModalOpen(false)} onUpload={handleUpload} />
           <UploadedItemsList uploadedItems={uploadedItems} onDelete={handleDelete} onEdit={handleEdit} />
-          <p>검색</p>
         </Items>
       </HeaderItemBox>
     </HeaderContainer>
