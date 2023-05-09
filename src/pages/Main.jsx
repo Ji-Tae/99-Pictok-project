@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import NewPicArea from '../components/NewPicArea';
 import { useAppLogic } from '../components/hooks/useAppLogic';
 import { UploadModal } from '../modals/upload.jsx';
+import BestPicArea from '../components/BestPicArea';
 
 const Main = () => {
   const { isLoggedIn,
@@ -38,6 +39,7 @@ const Main = () => {
         onClose={() => setUploadModalOpen(false)}
         onUpload={handleUpload}
       /> 
+      <BestPicArea />
     </Layout>
   );
 };
@@ -45,7 +47,7 @@ const Main = () => {
 
 const MainPic = styled.div`
   width: 100%;
-  height: 400px;
+  height: 600px;
   background-color: aliceblue;
   img {
     width: 100%;
@@ -68,7 +70,7 @@ const ShareButton = styled.button`
   border-radius: 15px;
   width: 230px;
   height: 60px;
-  background-color: #7e46d8;
+  background-color: #2563c1;
   color: #fff;
   cursor: pointer;
   &:hover {

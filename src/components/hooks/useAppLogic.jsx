@@ -1,23 +1,20 @@
-import { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-
-const API_BASE_URL = "http://44.201.251.58:3000";
 
 export const useAppLogic = () => {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [signupModalOpen, setSignupModalOpen] = useState(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
-  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const [uploadedItems, setUploadedItems] = useState([]);
+
+  const SERVER_URL = process.env.REACT_APP_SERVER_URL;
 
   const handleLoginClick = () => {
     setLoginModalOpen(true);
     setSignupModalOpen(false);
     setUploadModalOpen(false);
-  };
-
-  const handleLogoutClick = () => {
-    setLogoutModalOpen(true);
   };
 
   const handleSignupClick = () => {
@@ -27,8 +24,8 @@ export const useAppLogic = () => {
   };
 
   const handleUploadClick = () => {
-    setUploadModalOpen(true);
-  };
+      setUploadModalOpen(true);
+    }
 
   const handleSwitch = () => {
     if (loginModalOpen) {
@@ -40,157 +37,118 @@ export const useAppLogic = () => {
     }
   };
 
-  const loginMutation = useMutation(async ({ username, password }) => {
+  const handleLogin = async (nickname, password) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/login`, {
-        username,
-        password,
+      const response = await axios.post(`${SERVER_URL}/login`, {
+        nickname: nickname,
+        password: password,
       });
-  
-      return response.data;
+      if(response.data.message) {
+        setIsLoggedIn(true);
+        setLoginModalOpen(false);
+      } else if(response.data.errorMessage) {
+        alert(response.data.errorMessage);
+      }
     } catch (error) {
-      throw new Error("로그인 실패");
+      console.error('Error during login:', error);
     }
-  }, {
-    onSuccess: () => {
-      alert("로그인 성공");
-      setLoginModalOpen(false);
-    },
-    onError: (error) => {
-      console.error("Error during login:", error);
-      alert("로그인 실패");
-    },
-  });
-  
-  const signupMutation = useMutation(async ({ username, password }) => {
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
+
+  const handleSignup = async (authcode, nickname, password, confirm) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/signup`, {
-        username,
-        password,
+      const response = await axios.post(`${SERVER_URL}/signup`, {
+        authcode: authcode,
+        nickname: nickname,
+        password: password,
+        confirm: confirm,
       });
-  
-      return response.data;
+      if(response.data.message) {
+        setSignupModalOpen(false);
+      } else if(response.data.errorMessage) {
+        alert(response.data.errorMessage);
+      }
     } catch (error) {
-      throw new Error("회원가입 실패");
+      console.error('Error during signup:', error);
     }
-  }, {
-    onSuccess: () => {
-      alert("회원가입 성공");
-      setSignupModalOpen(false);
-    },
-    onError: (error) => {
-      console.error("Error during signup:", error);
-      alert("회원가입 실패");
-    },
-  });
-  
-  const uploadMutation = useMutation(async ({ title, description, file }) => {
+  };
+
+  const handleUpload = async ({ url, title, description, file }) => {
+    // 업로드 처리
+    if (!file) {
+      alert('파일을 선택해주세요.');
+      return;
+    }
+    const API_URL = '/uploads/upload';
     const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("file", file);
-  
+    formData.append('url', url);
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('image', file);
+
     try {
-      const response = await axios.post(`${API_BASE_URL}/upload`, formData);
-  
-      return response.data;
+      const response = await axios.post(API_URL, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      console.log(response.data);
     } catch (error) {
-      throw new Error("업로드 실패");
+      console.error('Error uploading file:', error);
     }
-  }, {
-    onSuccess: (data) => {
-      alert(`제목: ${data.title}, 내용: ${data.description}, 파일명: ${data.file}`);
-      setUploadModalOpen(false);
-    },
-    onError: (error) => {
-      console.error("Error during upload:", error);
-    },
-  });
-  
-  const fetchItems = async () => {
-    const response = await axios.get(`${API_BASE_URL}/posts`);
-    if (response.status !== 200) {
-      throw new Error("Fetching items failed");
-    }
-    return response.data;
+
+    console.log(`업로드: ${url}, ${title}, ${description}`);
+    setUploadModalOpen(false);
+
+    setUploadedItems([...uploadedItems, { url, title, description, file }]);
   };
 
-  const itemsQuery = useQuery("items", fetchItems);
-
-  const deleteItemMutation = useMutation(async (itemId) => {
-    const response = await axios.delete(`${API_BASE_URL}/posts/${itemId}`);
-    if (response.status !== 200) {
-      throw new Error("Deleting item failed");
-    }
-    return itemId;
-  }, {
-    onSuccess: (itemId) => {
-      itemsQuery.refetch();
-    },
-    onError: (error) => {
-      console.error('Error deleting item:', error);
-    },
-  });
-
-  const editItemMutation = useMutation(async ({ itemId, updatedData }) => {
-    const response = await axios.put(`${API_BASE_URL}/posts/${itemId}`, updatedData);
-    if (response.status !== 200) {
-      throw new Error("Editing item failed");
-    }
-    return response.data;
-  }, {
-    onSuccess: () => {
-      itemsQuery.refetch();
-    },
-    onError: (error) => {
-      console.error('Error editing item:', error);
-    },
-  });
-
-  const handleLogin = (username, password) => {
-    loginMutation.mutate({ username, password });
+  const handleDelete = (index) => {
+    setUploadedItems(uploadedItems.filter((_, i) => i !== index));
   };
 
-  const handleSignup = (username, password) => {
-    signupMutation.mutate({ username, password });
+  const handleEdit = (index, updatedItem) => {
+    const updatedItems = uploadedItems.map((item, i) => {
+      if (i === index) {
+        return updatedItem;
+      }
+      return item;
+    });
+    setUploadedItems(updatedItems);
   };
 
-  const handleUpload = (title, description, file) => {
-    uploadMutation.mutate({ title, description, file });
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('/uploads/upload');
+        setUploadedItems(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
-  const handleDelete = (itemId) => {
-    deleteItemMutation.mutate(itemId);
-  };
-
-  const handleEdit = (itemId, updatedData) => {
-    editItemMutation.mutate({ itemId, updatedData });
-  };
+    fetchData();
+  }, []);
 
   return {
     loginModalOpen,
     signupModalOpen,
     uploadModalOpen,
-    itemsQuery,
+    isLoggedIn,
+    uploadedItems,
     handleLoginClick,
     handleSignupClick,
     handleUploadClick,
     handleSwitch,
-    loginMutation,
-    signupMutation,
-    uploadMutation,
-    deleteItemMutation,
-    editItemMutation,
-    setLoginModalOpen,
-    setSignupModalOpen,
-    setUploadModalOpen,
     handleLogin,
+    handleLogout,
     handleSignup,
     handleUpload,
     handleDelete,
     handleEdit,
-    logoutModalOpen,
-    setLogoutModalOpen,
-    handleLogoutClick,
+    setLoginModalOpen,
+    setSignupModalOpen,
+    setUploadModalOpen,
   };
 };
