@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import { useMutation, useQueryClient } from "react-query";
-import axios from 'axios';
 import styled from "styled-components";
-import { useAppLogic } from "../components/hooks/useAppLogic";
+import { useAppLogic } from '../components/hooks/useAppLogic';
 
 export const Modal = ({ open, onClose, cancelButton, children }) => {
     if (!open) return null;
@@ -20,42 +18,34 @@ export const SignupModal = ({ open, onClose, onSwitch }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
+    const [email, setEmail] = useState("");
+    const [verificationCode, setVerificationCode] = useState("");
+    
+    const { handleSignup, handleEmailVerification, errorMessage, setErrorMessage } = useAppLogic(); 
 
-    const queryClient = useQueryClient();
-    const { handleSignup } = useAppLogic();
-    const signupMutation = useMutation(handleSignup, {
-        onSuccess: () => {
-            // Invalidate query cache
-            queryClient.invalidateQueries("currentUser");
-        },
-        onError: (error) => {
-            setErrorMessage(error.response.data.errorMessage);
+    const handleVerificationRequest = async () => {
+        try {
+            await handleEmailVerification(email);
+        } catch (error) {
+            setErrorMessage("인증 코드를 요청하는 도중 문제가 발생했습니다.");
         }
-    });
-
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // 회원가입 처리
         if (password !== confirmPassword) {
             setErrorMessage("비밀번호가 일치하지 않습니다.");
             return;
         }
 
+        if (!handleEmailVerification.verify(verificationCode)) {
+            setErrorMessage("인증 코드가 올바르지 않습니다.");
+            return;
+        }
+
         try {
-            await signupMutation.mutateAsync({
-                authcode: "557685",
-                nickname: username,
-                password: password,
-                confirm: confirmPassword,
-            });
-            if (!signupMutation.isError) {
-                onClose();
-                alert("회원 가입에 성공하였습니다.");
-            }
+            await handleSignup({ username, password, email });  
         } catch (error) {
-            // 예외 케이스
             setErrorMessage("서버와의 연결이 원활하지 않습니다.");
         }
     };
@@ -70,6 +60,21 @@ export const SignupModal = ({ open, onClose, onSwitch }) => {
                     id="username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                />
+                <InputLabel htmlFor="email">이메일</InputLabel>
+                <ModalInput
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <VerificationButton onClick={handleVerificationRequest}>인증 코드 요청</VerificationButton>
+                <InputLabel htmlFor="verificationCode">인증 코드</InputLabel>
+                <ModalInput
+                    type="text"
+                    id="verificationCode"
+                    value={verificationCode}
+                    onChange={(e) => setVerificationCode(e.target.value)}
                 />
                 <InputLabel htmlFor="password">비밀번호</InputLabel>
                 <ModalInput
@@ -139,6 +144,19 @@ const ModalInput = styled.input`
   border-radius: 3px;
 `;
 
+const VerificationButton = styled.button`
+  background-color: #3498db;
+  color: white;
+  padding: 5px 10px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 3px;
+  margin-bottom: 10px;
+  &:hover {
+    background-color: #2980b9;
+  }
+`;
+
 const SignupButton = styled.button`
   background-color: #3498db;
   color: white;
@@ -176,7 +194,7 @@ const CloseButton = styled.button`
   margin-top: 20px;
 `;
 
-const ErrorMessage = styled.div `
+const ErrorMessage = styled.div`
 color: red; 
 font-size: 14px; 
 margin-bottom: 10px;
