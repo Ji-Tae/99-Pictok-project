@@ -38,10 +38,10 @@ export const SignupModal = ({ open, onClose, onSwitch }) => {
 
     const handleEmailSubmit = () => authcodeMution.mutate(emailPost({ email }))
 
+    const sighupSubmit = () => signupMutation.mutate(signupPost({ nickname, password, confirm, authcode }))
+
     const handleSignupSubmit = (e) => {
         e.preventDefault();
-        signupMutation.mutate(signupPost({ nickname, password, confirm, authcode }))
-
     }
     return (
         <Modal open={open} onClose={onClose} cancelButton>
@@ -84,7 +84,7 @@ export const SignupModal = ({ open, onClose, onSwitch }) => {
                     value={confirm}
                     onChange={(e) => setConfirm(e.target.value)}
                 />
-                <SignupButton>회원가입</SignupButton>
+                <SignupButton onClick={sighupSubmit}>회원가입</SignupButton>
             </form>
             <SwitchContainer>
                 <span>회원이신가요? </span>
