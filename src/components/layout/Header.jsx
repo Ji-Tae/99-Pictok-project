@@ -1,50 +1,38 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useMutation, useQuery } from 'react-query';
-import { LoginModal } from '../../modals/login.jsx';
-import { SignupModal } from '../../modals/signup.jsx';
-import { UploadModal } from '../../modals/upload.jsx';
-import UploadedItemsList from '../uploaded.jsx';
+import { useAppLogic } from '../hooks/useAppLogic.jsx';
+import { LoginModal } from '../../modals/login.jsx'
+import { SignupModal } from '../../modals/signup.jsx'
+import { UploadModal } from '../../modals/upload.jsx'
+import UploadedItemsList from '../uploaded.jsx'
 
 function Header() {
-  const fetchItems = async () => {
-    const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/items`);
+  const {
+    loginModalOpen,
+    signupModalOpen,
+    uploadModalOpen,
+    itemsQuery,
+    handleLoginClick,
+    handleSignupClick,
+    // handleUploadClick,
+    handleSwitch,
+    handleLogout,
+    handleLogin,
+    handleSignup,
+    handleUpload,
+    // handleDelete,
+    // handleEdit,
+    loginMutation,
+    // signupMutation,
+    // uploadMutation,
+    deleteItemMutation,
+    editItemMutation,
+    setLoginModalOpen,
+    setSignupModalOpen,
+    setUploadModalOpen,
+  } = useAppLogic();
 
-    if (!response.ok) {
-      throw new Error('Error fetching items');
-    }
-
-    return response.json();
-  };
-
-  const { data: items, isLoading, isError, error } = useQuery('items', fetchItems);
-
-  const loginMutation = useMutation(async ({ username, password }) => {
-    const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    });
-
-    if (!response.ok) {
-      throw new Error('로그인 실패');
-    }
-
-    return response.json();
-  }, {
-    onSuccess: () => {
-      alert('로그인 성공');
-      setLoginModalOpen(false);
-    },
-    onError: (error) => {
-      console.error('Error during login:', error);
-      alert('로그인 실패');
-    },
-  });
-
-  const handleLoginClick = (username, password) => {
-    loginMutation.mutate({ username, password });
-  };
+  const { data: items, isLoading, isError, error } = itemsQuery;
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -53,6 +41,8 @@ function Header() {
   if (isError) {
     return <p>Error: {error.message}</p>;
   }
+
+  const isLoggedIn = loginMutation.isSuccess;
 
   return (
     <HeaderContainer>
@@ -89,8 +79,8 @@ function Header() {
       />
       <UploadedItemsList
         uploadedItems={items}
-        onDelete={handleDelete}
-        onEdit={handleEdit}
+        onDelete={deleteItemMutation.mutate}
+        onEdit={editItemMutation.mutate}
       />
     </HeaderContainer>
   );

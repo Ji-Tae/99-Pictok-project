@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
+import axios from 'axios';
 
 const API_BASE_URL = "http://44.201.251.58:3000";
 
@@ -7,11 +8,16 @@ export const useAppLogic = () => {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [signupModalOpen, setSignupModalOpen] = useState(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
 
   const handleLoginClick = () => {
     setLoginModalOpen(true);
     setSignupModalOpen(false);
     setUploadModalOpen(false);
+  };
+
+  const handleLogoutClick = () => {
+    setLogoutModalOpen(true);
   };
 
   const handleSignupClick = () => {
@@ -35,17 +41,16 @@ export const useAppLogic = () => {
   };
 
   const loginMutation = useMutation(async ({ username, password }) => {
-    const response = await fetch(`${API_BASE_URL}/api/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
-
-    if (!response.ok) {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/login`, {
+        username,
+        password,
+      });
+  
+      return response.data;
+    } catch (error) {
       throw new Error("로그인 실패");
     }
-
-    return response.json();
   }, {
     onSuccess: () => {
       alert("로그인 성공");
@@ -56,19 +61,18 @@ export const useAppLogic = () => {
       alert("로그인 실패");
     },
   });
-
+  
   const signupMutation = useMutation(async ({ username, password }) => {
-    const response = await fetch(`${API_BASE_URL}/api/signup`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
-
-    if (!response.ok) {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/signup`, {
+        username,
+        password,
+      });
+  
+      return response.data;
+    } catch (error) {
       throw new Error("회원가입 실패");
     }
-
-    return response.json();
   }, {
     onSuccess: () => {
       alert("회원가입 성공");
@@ -79,23 +83,20 @@ export const useAppLogic = () => {
       alert("회원가입 실패");
     },
   });
-
+  
   const uploadMutation = useMutation(async ({ title, description, file }) => {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     formData.append("file", file);
-
-    const response = await fetch(`${API_BASE_URL}/api/upload`, {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!response.ok) {
+  
+    try {
+      const response = await axios.post(`${API_BASE_URL}/upload`, formData);
+  
+      return response.data;
+    } catch (error) {
       throw new Error("업로드 실패");
     }
-
-    return response.json();
   }, {
     onSuccess: (data) => {
       alert(`제목: ${data.title}, 내용: ${data.description}, 파일명: ${data.file}`);
@@ -105,26 +106,22 @@ export const useAppLogic = () => {
       console.error("Error during upload:", error);
     },
   });
-
+  
   const fetchItems = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/items`);
-    if (!response.ok) {
+    const response = await axios.get(`${API_BASE_URL}/posts`);
+    if (response.status !== 200) {
       throw new Error("Fetching items failed");
     }
-    return response.json();
+    return response.data;
   };
 
   const itemsQuery = useQuery("items", fetchItems);
 
   const deleteItemMutation = useMutation(async (itemId) => {
-    const response = await fetch(`${API_BASE_URL}/api/items/${itemId}`, {
-      method: "DELETE",
-    });
-
-    if (!response.ok) {
+    const response = await axios.delete(`${API_BASE_URL}/posts/${itemId}`);
+    if (response.status !== 200) {
       throw new Error("Deleting item failed");
     }
-
     return itemId;
   }, {
     onSuccess: (itemId) => {
@@ -136,17 +133,11 @@ export const useAppLogic = () => {
   });
 
   const editItemMutation = useMutation(async ({ itemId, updatedData }) => {
-    const response = await fetch(`${API_BASE_URL}/api/items/${itemId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedData),
-    });
-
-    if (!response.ok) {
+    const response = await axios.put(`${API_BASE_URL}/posts/${itemId}`, updatedData);
+    if (response.status !== 200) {
       throw new Error("Editing item failed");
     }
-
-    return response.json();
+    return response.data;
   }, {
     onSuccess: () => {
       itemsQuery.refetch();
@@ -155,6 +146,26 @@ export const useAppLogic = () => {
       console.error('Error editing item:', error);
     },
   });
+
+  const handleLogin = (username, password) => {
+    loginMutation.mutate({ username, password });
+  };
+
+  const handleSignup = (username, password) => {
+    signupMutation.mutate({ username, password });
+  };
+
+  const handleUpload = (title, description, file) => {
+    uploadMutation.mutate({ title, description, file });
+  };
+
+  const handleDelete = (itemId) => {
+    deleteItemMutation.mutate(itemId);
+  };
+
+  const handleEdit = (itemId, updatedData) => {
+    editItemMutation.mutate({ itemId, updatedData });
+  };
 
   return {
     loginModalOpen,
@@ -173,5 +184,13 @@ export const useAppLogic = () => {
     setLoginModalOpen,
     setSignupModalOpen,
     setUploadModalOpen,
+    handleLogin,
+    handleSignup,
+    handleUpload,
+    handleDelete,
+    handleEdit,
+    logoutModalOpen,
+    setLogoutModalOpen,
+    handleLogoutClick,
   };
 };
