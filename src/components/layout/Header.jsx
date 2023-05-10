@@ -16,7 +16,6 @@ function Header() {
     handleSignupClick,
     handleSwitch,
     handleLogout,
-    handleSignup,
     handleUpload,
     setLoginModalOpen,
     setSignupModalOpen,
