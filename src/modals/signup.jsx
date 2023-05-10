@@ -4,94 +4,94 @@ import { useMutation } from "react-query";
 import { signupPost, emailPost } from "../api/query";
 
 export const Modal = ({ open, onClose, cancelButton, children }) => {
-    if (!open) return null;
-    return (
-        <ModalContainer>
-            <div className="modal-content">
-                {children}
-                {cancelButton && <CloseButton onClick={onClose}>닫기</CloseButton>}
-            </div>
-        </ModalContainer>
-    );
+  if (!open) return null;
+  return (
+    <ModalContainer>
+      <div className="modal-content">
+        {children}
+        {cancelButton && <CloseButton onClick={onClose}>닫기</CloseButton>}
+      </div>
+    </ModalContainer>
+  );
 };
 
 export const SignupModal = ({ open, onClose, onSwitch }) => {
-    const [nickname, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirm, setConfirm] = useState("");
-    const [email, setEmail] = useState("");
-    const [authcode, setAuthCode] = useState("");
-    const [errorMessage, setErrorMessage] = useState('');
+  const [nickname, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [email, setEmail] = useState("");
+  const [authcode, setAuthCode] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
 
-    const signupMutation = useMutation(signupPost, {
-        onSuccess: () => {
-            onClose();
-        },
-        onError: (error) => {
-            if (error.response) {
-                setErrorMessage(error.response.data.errorMessage);
-            }
-        },
-    });
+  const signupMutation = useMutation(signupPost, {
+    onSuccess: () => {
+      onClose();
+    },
+    onError: (error) => {
+      if (error.response) {
+        setErrorMessage(error.response.data.errorMessage);
+      }
+    },
+  });
 
-    const authcodeMution = useMutation()
+  const authcodeMution = useMutation()
 
-    const handleEmailSubmit = () => authcodeMution.mutate(emailPost({ email }))
+  const handleEmailSubmit = () => authcodeMution.mutate(emailPost({ email }))
 
-    const sighupSubmit = () => signupMutation.mutate(signupPost({ nickname, password, confirm, authcode }))
+  const sighupSubmit = () => signupMutation.mutate(signupPost({ nickname, password, confirm, authcode }))
 
-    const handleSignupSubmit = (e) => {
-        e.preventDefault();
-    }
-    return (
-        <Modal open={open} onClose={onClose} cancelButton>
-            <ModalTitle>회원가입</ModalTitle>
-            {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-            <form onSubmit={handleSignupSubmit}>
-                <InputLabel htmlFor="username">아이디</InputLabel>
-                <ModalInput
-                    type="text"
-                    id="username"
-                    value={nickname}
-                    onChange={(e) => setUsername(e.target.value)}
-                />
-                <InputLabel htmlFor="email">이메일</InputLabel>
-                <ModalInput
-                    type="email"
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <VerificationButton onClick={handleEmailSubmit}>인증 코드 요청</VerificationButton>
-                <InputLabel htmlFor="authcode">인증 코드</InputLabel>
-                <ModalInput
-                    type="text"
-                    id="authcode"
-                    value={authcode}
-                    onChange={(e) => setAuthCode(e.target.value)}
-                />
-                <InputLabel htmlFor="password">비밀번호</InputLabel>
-                <ModalInput
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <InputLabel htmlFor="confirm">비밀번호 확인</InputLabel>
-                <ModalInput
-                    type="password"
-                    id="confirm"
-                    value={confirm}
-                    onChange={(e) => setConfirm(e.target.value)}
-                />
-                <SignupButton onClick={sighupSubmit}>회원가입</SignupButton>
-            </form>
-            <SwitchContainer>
-                <span>회원이신가요? </span>
-                <SwitchButton onClick={onSwitch}>로그인</SwitchButton>
-            </SwitchContainer>
-        </Modal>
-    );
+  const handleSignupSubmit = (e) => {
+    e.preventDefault();
+  }
+  return (
+    <Modal open={open} onClose={onClose} cancelButton>
+      <ModalTitle>회원가입</ModalTitle>
+      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+      <form onSubmit={handleSignupSubmit}>
+        <InputLabel htmlFor="email">이메일</InputLabel>
+        <ModalInput
+          type="email"
+          id="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <VerificationButton onClick={handleEmailSubmit}>인증 코드 요청</VerificationButton>
+        <InputLabel htmlFor="authcode">인증 코드</InputLabel>
+        <ModalInput
+          type="text"
+          id="authcode"
+          value={authcode}
+          onChange={(e) => setAuthCode(e.target.value)}
+        />
+        <InputLabel htmlFor="username">아이디</InputLabel>
+        <ModalInput
+          type="text"
+          id="username"
+          value={nickname}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <InputLabel htmlFor="password">비밀번호</InputLabel>
+        <ModalInput
+          type="password"
+          id="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <InputLabel htmlFor="confirm">비밀번호 확인</InputLabel>
+        <ModalInput
+          type="password"
+          id="confirm"
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
+        />
+        <SignupButton onClick={sighupSubmit}>회원가입</SignupButton>
+      </form>
+      <SwitchContainer>
+        <span>회원이신가요? </span>
+        <SwitchButton onClick={onSwitch}>로그인</SwitchButton>
+      </SwitchContainer>
+    </Modal>
+  );
 };
 
 const ModalContainer = styled.div`

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useMutation } from "react-query";
 import { loginPost } from "../api/query";
+import { useCookies } from "react-cookie";
 
 export const Modal = ({ open, onClose, cancelButton, children }) => {
     if (!open) return null;
@@ -20,11 +21,13 @@ export const LoginModal = ({ open, onClose, onLogin, onSwitch }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const [errorMessage, setErrorMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState("");
+
+    const [cookies, setCookie] = useCookies(['token']);
 
     const loginMutation = useMutation(loginPost, {
         onSuccess: (data) => {
-            localStorage.setItem('token', data.token);
+            setCookie('token', data.token, { path: '/' });
             onClose();
         },
         onError: (error) => {
