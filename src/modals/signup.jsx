@@ -45,6 +45,7 @@ export const SignupModal = ({ open, onClose, onSwitch }) => {
   }
   return (
     <Modal open={open} onClose={onClose} cancelButton>
+      <h1>PIC TOK</h1>
       <ModalTitle>회원가입</ModalTitle>
       {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       <form onSubmit={handleSignupSubmit}>

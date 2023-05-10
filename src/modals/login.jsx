@@ -5,68 +5,69 @@ import { loginPost } from "../api/query";
 import { useCookies } from "react-cookie";
 
 export const Modal = ({ open, onClose, cancelButton, children }) => {
-    if (!open) return null;
-    return (
-        <ModalContainer>
-            <div className="modal-content">
-                {children}
-                {cancelButton && <CloseButton
-                    onClick={onClose}>닫기</CloseButton>}
-            </div>
-        </ModalContainer>
-    );
+  if (!open) return null;
+  return (
+    <ModalContainer>
+      <div className="modal-content">
+        {children}
+        {cancelButton && <CloseButton
+          onClick={onClose}>닫기</CloseButton>}
+      </div>
+    </ModalContainer>
+  );
 };
 
 export const LoginModal = ({ open, onClose, onLogin, onSwitch }) => {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-    const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-    const [cookies, setCookie] = useCookies(['token']);
+  const [cookies, setCookie] = useCookies(['token']);
 
-    const loginMutation = useMutation(loginPost, {
-        onSuccess: (data) => {
-            setCookie('token', data.token, { path: '/' });
-            onClose();
-        },
-        onError: (error) => {
-            if (error.response) {
-                setErrorMessage(error.response.data.errorMessage);
-            }
-        }
-    });
+  const loginMutation = useMutation(loginPost, {
+    onSuccess: (data) => {
+      setCookie('token', data.token, { path: '/' });
+      onClose();
+    },
+    onError: (error) => {
+      if (error.response) {
+        setErrorMessage(error.response.data.errorMessage);
+      }
+    }
+  });
 
-    const handleLogin = (e) => {
-        e.preventDefault();
-        loginMutation.mutate({ nickname: username, password });
-    };
+  const handleLogin = (e) => {
+    e.preventDefault();
+    loginMutation.mutate({ nickname: username, password });
+  };
 
-    return (
-        <Modal open={open} onClose={onClose} cancelButton>
-            <ModalTitle>로그인</ModalTitle>
-            {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-            <InputLabel htmlFor="username">아이디</InputLabel>
-            <ModalInput
-                type="text"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-            />
-            <InputLabel htmlFor="password">비밀번호</InputLabel>
-            <ModalInput
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <LoginButton onClick={handleLogin}>로그인</LoginButton>
-            <SwitchContainer>
-                <span>회원이 아니십니까? </span>
-                <SwitchButton onClick={onSwitch}>회원가입</SwitchButton>
-            </SwitchContainer>
-        </Modal>
-    );
+  return (
+    <Modal open={open} onClose={onClose} cancelButton>
+      <h1>PIC TOK</h1>
+      <ModalTitle>로그인</ModalTitle>
+      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+      <InputLabel htmlFor="username">아이디</InputLabel>
+      <ModalInput
+        type="text"
+        id="username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <InputLabel htmlFor="password">비밀번호</InputLabel>
+      <ModalInput
+        type="password"
+        id="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <LoginButton onClick={handleLogin}>로그인</LoginButton>
+      <SwitchContainer>
+        <span>회원이 아니십니까? </span>
+        <SwitchButton onClick={onSwitch}>회원가입</SwitchButton>
+      </SwitchContainer>
+    </Modal>
+  );
 };
 
 const ModalContainer = styled.div`
