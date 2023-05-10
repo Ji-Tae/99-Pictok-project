@@ -19,14 +19,16 @@ const Main = () => {
           alt='메인이미지'
         />
       </MainPic>
-      <SharButtonContainer>
-        <ShareButton
-          onClick={() => {
-            handleUploadClick();
-          }}>
-          사진 공유하기
-        </ShareButton>
-      </SharButtonContainer>
+      {cookie ? (
+        <SharButtonContainer>
+          <ShareButton
+            onClick={() => {
+              handleUploadClick();
+            }}>
+            사진 공유하기
+          </ShareButton>
+        </SharButtonContainer>
+      ) : null}
 
       <NewPicArea />
 
