@@ -34,6 +34,7 @@ export const useAppLogic = () => {
 
   const handleLogout = () => {
     Cookies.remove('token');
+    window.location.reload();
   };
 
   return {

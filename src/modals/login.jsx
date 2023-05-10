@@ -29,6 +29,7 @@ export const LoginModal = ({ open, onClose, onSwitch }) => {
     onSuccess: (data) => {
       Cookies.set('token', data.token);
       onClose();
+      window.location.reload();
     },
     onError: (error) => {
       if (error.response) {

@@ -5,10 +5,11 @@ import NewPicArea from '../components/NewPicArea';
 import { useAppLogic } from '../components/hooks/useAppLogic';
 import { UploadModal } from '../modals/upload.jsx';
 import BestPicArea from '../components/BestPicArea';
+import Cookies from 'js-cookie';
 
 const Main = () => {
   const { handleUploadClick, uploadModalOpen, setUploadModalOpen, handleUpload } = useAppLogic();
-
+  const cookie = Cookies.get('token');
   return (
     <Layout>
       <MainPic>
@@ -19,12 +20,21 @@ const Main = () => {
       </MainPic>
 
       <SharButtonContainer>
-        <ShareButton
-          onClick={() => {
-            handleUploadClick();
-          }}>
-          사진 공유하기
-        </ShareButton>
+        {cookie ? (
+          <ShareButton
+            onClick={() => {
+              handleUploadClick();
+            }}>
+            사진 공유하기
+          </ShareButton>
+        ) : (
+          <ShareButton
+            onClick={() => {
+              alert('로그인해주세요');
+            }}>
+            사진 공유하기
+          </ShareButton>
+        )}
       </SharButtonContainer>
 
       <NewPicArea />
