@@ -5,9 +5,11 @@ import NewPicArea from '../components/NewPicArea';
 import { useAppLogic } from '../components/hooks/useAppLogic';
 import { UploadModal } from '../modals/upload.jsx';
 import BestPicArea from '../components/BestPicArea';
+import Cookies from 'js-cookie';
 
 const Main = () => {
   const { handleUploadClick, uploadModalOpen, setUploadModalOpen, handleUpload } = useAppLogic();
+  const cookie = Cookies.get('token');
 
   return (
     <Layout>
@@ -27,7 +29,9 @@ const Main = () => {
       </SharButtonContainer>
 
       <NewPicArea />
+
       <UploadModal open={uploadModalOpen} onClose={() => setUploadModalOpen(false)} onUpload={handleUpload} />
+
       <BestPicArea />
     </Layout>
   );

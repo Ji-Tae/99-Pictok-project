@@ -1,10 +1,10 @@
 import { useState } from 'react';
+import Cookies from 'js-cookie';
 
 export const useAppLogic = () => {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [signupModalOpen, setSignupModalOpen] = useState(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLoginClick = () => {
     setLoginModalOpen(true);
@@ -33,14 +33,13 @@ export const useAppLogic = () => {
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    Cookies.remove('token');
   };
 
   return {
     loginModalOpen,
     signupModalOpen,
     uploadModalOpen,
-    isLoggedIn,
     handleLoginClick,
     handleSignupClick,
     handleUploadClick,

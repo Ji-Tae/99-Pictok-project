@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import { useMutation } from "react-query";
-import { signupPost, emailPost } from "../api/query";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { useMutation } from 'react-query';
+import { emailPost, signupPost } from '../api/user';
 
 export const Modal = ({ open, onClose, cancelButton, children }) => {
   if (!open) return null;
   return (
     <ModalContainer>
-      <div className="modal-content">
+      <div className='modal-content'>
         {children}
         {cancelButton && <CloseButton onClick={onClose}>닫기</CloseButton>}
       </div>
@@ -16,11 +16,11 @@ export const Modal = ({ open, onClose, cancelButton, children }) => {
 };
 
 export const SignupModal = ({ open, onClose, onSwitch }) => {
-  const [nickname, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [email, setEmail] = useState("");
-  const [authcode, setAuthCode] = useState("");
+  const [nickname, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [email, setEmail] = useState('');
+  const [authcode, setAuthCode] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const signupMutation = useMutation(signupPost, {
@@ -34,57 +34,32 @@ export const SignupModal = ({ open, onClose, onSwitch }) => {
     },
   });
 
-  const authcodeMution = useMutation()
+  const authcodeMution = useMutation();
 
-  const handleEmailSubmit = () => authcodeMution.mutate(emailPost({ email }))
+  const handleEmailSubmit = () => authcodeMution.mutate(emailPost({ email }));
 
-  const sighupSubmit = () => signupMutation.mutate(signupPost({ nickname, password, confirm, authcode }))
+  const sighupSubmit = () => signupMutation.mutate(signupPost({ nickname, password, confirm, authcode }));
 
   const handleSignupSubmit = (e) => {
     e.preventDefault();
-  }
+  };
   return (
     <Modal open={open} onClose={onClose} cancelButton>
       <h1>PIC TOK</h1>
       <ModalTitle>회원가입</ModalTitle>
       {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       <form onSubmit={handleSignupSubmit}>
-        <InputLabel htmlFor="email">이메일</InputLabel>
-        <ModalInput
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <InputLabel htmlFor='email'>이메일</InputLabel>
+        <ModalInput type='email' id='email' value={email} onChange={(e) => setEmail(e.target.value)} />
         <VerificationButton onClick={handleEmailSubmit}>인증 코드 요청</VerificationButton>
-        <InputLabel htmlFor="authcode">인증 코드</InputLabel>
-        <ModalInput
-          type="text"
-          id="authcode"
-          value={authcode}
-          onChange={(e) => setAuthCode(e.target.value)}
-        />
-        <InputLabel htmlFor="username">아이디</InputLabel>
-        <ModalInput
-          type="text"
-          id="username"
-          value={nickname}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <InputLabel htmlFor="password">비밀번호</InputLabel>
-        <ModalInput
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <InputLabel htmlFor="confirm">비밀번호 확인</InputLabel>
-        <ModalInput
-          type="password"
-          id="confirm"
-          value={confirm}
-          onChange={(e) => setConfirm(e.target.value)}
-        />
+        <InputLabel htmlFor='authcode'>인증 코드</InputLabel>
+        <ModalInput type='text' id='authcode' value={authcode} onChange={(e) => setAuthCode(e.target.value)} />
+        <InputLabel htmlFor='username'>아이디</InputLabel>
+        <ModalInput type='text' id='username' value={nickname} onChange={(e) => setUsername(e.target.value)} />
+        <InputLabel htmlFor='password'>비밀번호</InputLabel>
+        <ModalInput type='password' id='password' value={password} onChange={(e) => setPassword(e.target.value)} />
+        <InputLabel htmlFor='confirm'>비밀번호 확인</InputLabel>
+        <ModalInput type='password' id='confirm' value={confirm} onChange={(e) => setConfirm(e.target.value)} />
         <SignupButton onClick={sighupSubmit}>회원가입</SignupButton>
       </form>
       <SwitchContainer>
@@ -189,7 +164,7 @@ const CloseButton = styled.button`
 `;
 
 const ErrorMessage = styled.div`
-color: red; 
-font-size: 14px; 
-margin-bottom: 10px;
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
 `;

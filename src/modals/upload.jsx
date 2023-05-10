@@ -1,13 +1,15 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import React, { useState } from 'react';
+import { useMutation } from 'react-query';
+import styled from 'styled-components';
+import { uploadPost } from '../api/posts';
 
 export const Modal = ({ open, onClose, cancelButton, children }) => {
   if (!open) return null;
   return (
     <ModalContainer>
-      <div className="modal-content">
+      <div className='modal-content'>
         {cancelButton && (
-          <CloseButton className="close" onClick={onClose}>
+          <CloseButton className='close' onClick={onClose}>
             ×
           </CloseButton>
         )}
@@ -18,24 +20,41 @@ export const Modal = ({ open, onClose, cancelButton, children }) => {
 };
 
 export const UploadModal = ({ open, onClose, onUpload }) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [selectedFiles, setSelectedFiles] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const uploadMutatuon = useMutation(uploadPost, {
+    onSuccess: () => {
+      onClose();
+    },
+  });
 
   const handleFileChange = (e) => {
-    setSelectedFiles(e.target.files);
+    const picLists = e.target.files;
+    let picUrlLists = [...selectedFiles];
+
+    for (let i = 0; i < picLists.length; i++) {
+      const currentPicUrl = URL.createObjectURL(picLists[i]);
+      picUrlLists.push(currentPicUrl);
+    }
+
+    if (picUrlLists.length > 10) {
+      picUrlLists = picUrlLists.slice(0, 10);
+    }
+    setSelectedFiles(picUrlLists);
   };
 
   const handleSubmit = () => {
     if (!title || !description || !selectedFiles) {
-      setErrorMessage("제목, 내용, 파일을 모두 입력해주세요.");
+      setErrorMessage('제목, 내용, 파일을 모두 입력해주세요.');
       return;
     }
     // 업로드 로직 처리
     // 선택한 파일을 순회하며 각각 업로드를 수행합니다.
     Array.from(selectedFiles).forEach((file) => {
-      onUpload({ title, description, file });
+      uploadPost({ title, description, file });
     });
     onClose();
   };
@@ -43,22 +62,19 @@ export const UploadModal = ({ open, onClose, onUpload }) => {
   return (
     <Modal open={open} onClose={onClose} cancelButton>
       <ModalTitle>업로드</ModalTitle>
-      <InputLabel htmlFor="file">파일 위치</InputLabel>
-      <ModalInput type="file" id="file" onChange={handleFileChange} multiple />
-      <InputLabel htmlFor="title">제목</InputLabel>
-      <ModalInput
-        type="text"
-        id="title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <InputLabel htmlFor="description">내용</InputLabel>
-      <ModalInput
-        as="textarea"
-        id="description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
+      <InputLabel htmlFor='file'>파일 위치</InputLabel>
+      <ModalInput type='file' id='file' onChange={handleFileChange} multiple />
+      {selectedFiles.map((pic, id) => {
+        return (
+          <div key={id} style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+            <img src={pic} alt={`${pic}-${id}`} style={{ width: '50px', height: '50px' }} />
+          </div>
+        );
+      })}
+      <InputLabel htmlFor='title'>제목</InputLabel>
+      <ModalInput type='text' id='title' value={title} onChange={(e) => setTitle(e.target.value)} />
+      <InputLabel htmlFor='description'>내용</InputLabel>
+      <ModalInput as='textarea' id='description' value={description} onChange={(e) => setDescription(e.target.value)} />
       {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       <UploadButton onClick={handleSubmit}>업로드</UploadButton>
     </Modal>
@@ -132,7 +148,7 @@ const CloseButton = styled.button`
 `;
 
 const ErrorMessage = styled.div`
-color: red; 
-font-size: 14px; 
-margin-bottom: 10px;
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
 `;

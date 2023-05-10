@@ -3,15 +3,9 @@ import PicCard from './PicCard';
 import styled from 'styled-components';
 import Text from './Text';
 import { useQuery } from 'react-query';
-import { getNewPictures } from '../api/query';
-// import { useAppLogic } from '../components/hooks/useAppLogic.jsx';
+import { getNewPictures } from '../api/posts';
 
 function PicArea() {
-  // const {
-  //   deleteItemMutation,
-  //   editItemMutation,
-  // } = useAppLogic();
-
   const { isLoading, isError, data } = useQuery('newposts', getNewPictures);
   const newPicList = data?.data;
   if (isLoading) {

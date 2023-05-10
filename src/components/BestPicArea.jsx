@@ -3,7 +3,7 @@ import PicCard from './PicCard';
 import styled from 'styled-components';
 import Text from './Text';
 import { useQuery } from 'react-query';
-import { getBestPictures } from '../api/query';
+import { getBestPictures } from '../api/posts';
 
 function PicArea() {
   const { isLoading, isError, data } = useQuery('bestposts', getBestPictures);
