@@ -19,59 +19,42 @@ export const Modal = ({ open, onClose, cancelButton, children }) => {
   );
 };
 
-export const UploadModal = ({ open, onClose, onUpload }) => {
+export const UploadModal = ({ open, onClose }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const uploadMutatuon = useMutation(uploadPost, {
+  const uploadMutation = useMutation(uploadPost, {
     onSuccess: () => {
       onClose();
     },
   });
 
   const handleFileChange = (e) => {
-    const picLists = e.target.files;
-    let picUrlLists = [...selectedFiles];
-
-    for (let i = 0; i < picLists.length; i++) {
-      const currentPicUrl = URL.createObjectURL(picLists[i]);
-      picUrlLists.push(currentPicUrl);
-    }
-
-    if (picUrlLists.length > 10) {
-      picUrlLists = picUrlLists.slice(0, 10);
-    }
-    setSelectedFiles(picUrlLists);
+    const file = e.target.files[0];
+    setSelectedFile(file);
   };
 
   const handleSubmit = () => {
-    if (!title || !description || !selectedFiles) {
+    if (!title || !description || !selectedFile) {
       setErrorMessage('제목, 내용, 파일을 모두 입력해주세요.');
       return;
     }
-    uploadMutatuon.mutate(
-      uploadPost({
-        title,
-        content: description,
-        photo: selectedFiles,
-      }),
-    );
+
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('content', description);
+    formData.append('photo', selectedFile);
+
+    uploadMutation.mutate(formData);
   };
 
   return (
     <Modal open={open} onClose={onClose} cancelButton>
       <ModalTitle>업로드</ModalTitle>
       <InputLabel htmlFor='file'>파일 위치</InputLabel>
-      <ModalInput type='file' id='file' onChange={handleFileChange} multiple />
-      {selectedFiles.map((pic, id) => {
-        return (
-          <div key={id}>
-            <img src={pic} alt={`${pic}-${id}`} style={{ width: '100px', height: '100px' }} />
-          </div>
-        );
-      })}
+      <ModalInput type='file' id='file' onChange={handleFileChange} />
       <InputLabel htmlFor='title'>제목</InputLabel>
       <ModalInput type='text' id='title' value={title} onChange={(e) => setTitle(e.target.value)} />
       <InputLabel htmlFor='description'>내용</InputLabel>

@@ -7,7 +7,6 @@ import { getBestPictures } from '../api/posts';
 
 function PicArea() {
   const { isLoading, isError, data } = useQuery('bestposts', getBestPictures);
-  const bestPicList = data?.data;
   if (isLoading) {
     return <h3>사진 가져오는 중 입니다....</h3>;
   }
@@ -23,7 +22,7 @@ function PicArea() {
         가장 인기 있는 사진을 구경해보세요!
       </Text>
       <PicContainer>
-        {bestPicList?.map((card) => {
+        {data?.map((card) => {
           return <PicCard key={card.id} width={632} card={card} />;
         })}
       </PicContainer>
