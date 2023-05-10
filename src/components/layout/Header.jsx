@@ -5,13 +5,14 @@ import { useAppLogic } from '../hooks/useAppLogic.jsx';
 import { SignupModal } from '../../modals/signup.jsx';
 import { UploadModal } from '../../modals/upload.jsx';
 import Search from '../Search';
+import Cookies from 'js-cookie';
 
 function Header() {
+  const cookie = Cookies.get('token');
   const {
     loginModalOpen,
     signupModalOpen,
     uploadModalOpen,
-    isLoggedIn,
     handleLoginClick,
     handleSignupClick,
     handleSwitch,
@@ -32,20 +33,12 @@ function Header() {
           <Search />
         </Items>
         <Items>
-          <LoginModal
-            open={loginModalOpen}
-            onClose={() => setLoginModalOpen(false)}
-            onSwitch={handleSwitch}
-          />
+          <LoginModal open={loginModalOpen} onClose={() => setLoginModalOpen(false)} onSwitch={handleSwitch} />
 
-          <SignupModal
-            open={signupModalOpen}
-            onClose={() => setSignupModalOpen(false)}
-            onSwitch={handleSwitch}
-          />
+          <SignupModal open={signupModalOpen} onClose={() => setSignupModalOpen(false)} onSwitch={handleSwitch} />
 
-          {!isLoggedIn ? <p onClick={handleLoginClick}>로그인</p> : <p onClick={handleLogout}>로그아웃</p>}
-          {!isLoggedIn && <p onClick={handleSignupClick}>회원가입</p>}
+          {!cookie ? <p onClick={handleLoginClick}>로그인</p> : <p onClick={handleLogout}>로그아웃</p>}
+          {!cookie && <p onClick={handleSignupClick}>회원가입</p>}
           <UploadModal open={uploadModalOpen} onClose={() => setUploadModalOpen(false)} onUpload={handleUpload} />
         </Items>
       </HeaderItemBox>

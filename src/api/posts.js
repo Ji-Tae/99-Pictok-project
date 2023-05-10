@@ -28,6 +28,7 @@ const uploadPost = async ({ title, content, photo }) => {
         Authorization: `Bearer ${cookie}`,
       },
     },
+    { withCredentials: true },
   );
   return response.data;
 };

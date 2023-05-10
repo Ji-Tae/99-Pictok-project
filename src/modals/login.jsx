@@ -16,13 +16,13 @@ export const Modal = ({ open, onClose, cancelButton, children }) => {
   );
 };
 
-export const LoginModal = ({ open, onClose, onLogin, onSwitch }) => {
+export const LoginModal = ({ open, onClose, onSwitch }) => {
   const [nickname, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const [errorMessage, setErrorMessage] = useState('');
 
-  const loginMutation = useMutation(loginPost({ nickname, password }), {
+  const loginMutation = useMutation(loginPost, {
     onSuccess: (data) => {
       Cookies.set('token', data.token);
       onClose();
@@ -34,9 +34,8 @@ export const LoginModal = ({ open, onClose, onLogin, onSwitch }) => {
     },
   });
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    loginMutation.mutate({ nickname: nickname, password });
+  const handleLogin = () => {
+    loginMutation.mutate({ nickname, password });
   };
 
   return (

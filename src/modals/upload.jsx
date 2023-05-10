@@ -51,12 +51,13 @@ export const UploadModal = ({ open, onClose, onUpload }) => {
       setErrorMessage('제목, 내용, 파일을 모두 입력해주세요.');
       return;
     }
-    // 업로드 로직 처리
-    // 선택한 파일을 순회하며 각각 업로드를 수행합니다.
-    Array.from(selectedFiles).forEach((file) => {
-      uploadPost({ title, description, file });
-    });
-    onClose();
+    uploadMutatuon.mutate(
+      uploadPost({
+        title,
+        content: description,
+        photo: selectedFiles,
+      }),
+    );
   };
 
   return (
@@ -66,8 +67,8 @@ export const UploadModal = ({ open, onClose, onUpload }) => {
       <ModalInput type='file' id='file' onChange={handleFileChange} multiple />
       {selectedFiles.map((pic, id) => {
         return (
-          <div key={id} style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-            <img src={pic} alt={`${pic}-${id}`} style={{ width: '50px', height: '50px' }} />
+          <div key={id}>
+            <img src={pic} alt={`${pic}-${id}`} style={{ width: '100px', height: '100px' }} />
           </div>
         );
       })}
