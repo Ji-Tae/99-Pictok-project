@@ -41,7 +41,7 @@ export const SignupModal = ({ open, onClose, onSwitch }) => {
 
   const handleEmailSubmit = () => authcodeMution.mutate(emailPost({ email }));
 
-  const sighupSubmit = () => signupMutation.mutate(signupPost({ nickname, password, confirm, authcode }));
+  const sighupSubmit = () => signupMutation.mutate(signupPost({ nickname, password, confirm, authcode, email }));
 
   const handleSignupSubmit = (e) => {
     e.preventDefault();
