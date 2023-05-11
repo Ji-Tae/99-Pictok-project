@@ -6,13 +6,16 @@ import { loginPost } from '../api/user';
 
 export const Modal = ({ open, onClose, cancelButton, children }) => {
   if (!open) return null;
-  return (
+  return (<>
+    <Overlay />
     <ModalContainer>
       <div className='modal-content'>
         {children}
         {cancelButton && <CloseButton onClick={onClose}>닫기</CloseButton>}
       </div>
     </ModalContainer>
+  </>
+
   );
 };
 
@@ -56,6 +59,16 @@ export const LoginModal = ({ open, onClose, onSwitch }) => {
     </Modal>
   );
 };
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+`;
 
 const ModalContainer = styled.div`
   position: fixed;

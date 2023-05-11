@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 //회원가입 포스트 요청
-const signupPost = async ({ authcode, nickname, password, confirm }) => {
+const signupPost = async ({ authcode, nickname, password, confirm, email }) => {
   const response = await axios.post(
     `${process.env.REACT_APP_SERVER_URL}/signup`,
     {
@@ -9,6 +9,7 @@ const signupPost = async ({ authcode, nickname, password, confirm }) => {
       password,
       confirm,
       authcode,
+      email,
     },
     { withCredentials: true },
   );

@@ -6,12 +6,15 @@ import { emailPost, signupPost } from '../api/user';
 export const Modal = ({ open, onClose, cancelButton, children }) => {
   if (!open) return null;
   return (
-    <ModalContainer>
-      <div className='modal-content'>
-        {children}
-        {cancelButton && <CloseButton onClick={onClose}>닫기</CloseButton>}
-      </div>
-    </ModalContainer>
+    <>
+      <Overlay />
+      <ModalContainer>
+        <div className='modal-content'>
+          {children}
+          {cancelButton && <CloseButton onClick={onClose}>닫기</CloseButton>}
+        </div>
+      </ModalContainer>
+    </>
   );
 };
 
@@ -38,7 +41,7 @@ export const SignupModal = ({ open, onClose, onSwitch }) => {
 
   const handleEmailSubmit = () => authcodeMution.mutate(emailPost({ email }));
 
-  const sighupSubmit = () => signupMutation.mutate(signupPost({ nickname, password, confirm, authcode }));
+  const sighupSubmit = () => signupMutation.mutate(signupPost({ nickname, password, confirm, authcode, email }));
 
   const handleSignupSubmit = (e) => {
     e.preventDefault();
@@ -69,6 +72,16 @@ export const SignupModal = ({ open, onClose, onSwitch }) => {
     </Modal>
   );
 };
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+`;
 
 const ModalContainer = styled.div`
   position: fixed;
