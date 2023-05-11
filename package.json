@@ -1,4 +1,5 @@
 {
+  "homepage": "http://ji-tae.github.io/",
   "name": "mini_project",
   "version": "0.1.0",
   "private": true,
@@ -10,6 +11,7 @@
     "@testing-library/user-event": "^13.2.1",
     "axios": "^1.4.0",
     "date-fns": "^2.30.0",
+    "gh-pages": "^5.0.0",
     "js-cookie": "^3.0.5",
     "multer": "^1.4.5-lts.1",
     "react": "^18.2.0",
@@ -24,7 +26,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
