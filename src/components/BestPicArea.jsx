@@ -22,7 +22,7 @@ function PicArea() {
         가장 인기 있는 사진을 구경해보세요!
       </Text>
       <PicContainer>
-        {data?.data?.map((card) => {
+        {data?.map((card) => {
           return <PicCard key={card.id} width={632} card={card} />;
         })}
       </PicContainer>
