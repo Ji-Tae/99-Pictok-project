@@ -3,13 +3,11 @@ import Cookies from 'js-cookie';
 // 최신 사진 겟 요청
 const getNewPictures = async () => {
   const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/posts/newposts`, { withCredentials: true });
-  console.log(response);
   return response.data;
 };
 //베스트 사진 겟 요청
 const getBestPictures = async () => {
   const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/posts/bestposts`, { withCredentials: true });
-  console.log(response);
   return response.data;
 };
 
