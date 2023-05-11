@@ -24,7 +24,7 @@ function PicArea() {
         새로 올라온 사진을 구경해보세요!
       </Text>
       <PicContainer>
-        {data?.map((card) => {
+        {data?.data?.map((card) => {
           return <PicCard key={card.id} width={308} card={card} />;
         })}
       </PicContainer>
