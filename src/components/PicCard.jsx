@@ -4,6 +4,7 @@ import Text from './Text';
 import { CommentOutlined, HeartOutlined } from '@ant-design/icons';
 
 function PicCard({ width, card }) {
+  let postAtDate = new Date(card.createdAt);
   return (
     <Card width={width}>
       <ImageBox>
@@ -23,7 +24,7 @@ function PicCard({ width, card }) {
           </div>
 
           <Text fontSize={10} color={'#9d9d9d'}>
-            2시간 전 작성
+            {postAtDate.toLocaleTimeString()}
           </Text>
         </div>
         <TextGrop>
@@ -45,7 +46,7 @@ function PicCard({ width, card }) {
               paddingTop: '30px',
             }}>
             <Text fontSize={12} color={'#9d9d9d'}>
-              김용식님이 업로드하신 사진입니다
+              {card.nickname}님이 업로드하신 사진입니다
             </Text>
             <Text fontSize={10} color={'#9d9d9d'}>
               댓글 달기

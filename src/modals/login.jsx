@@ -6,16 +6,16 @@ import { loginPost } from '../api/user';
 
 export const Modal = ({ open, onClose, cancelButton, children }) => {
   if (!open) return null;
-  return (<>
-    <Overlay />
-    <ModalContainer>
-      <div className='modal-content'>
-        {children}
-        {cancelButton && <CloseButton onClick={onClose}>닫기</CloseButton>}
-      </div>
-    </ModalContainer>
-  </>
-
+  return (
+    <>
+      <Overlay />
+      <ModalContainer>
+        <div className='modal-content'>
+          {children}
+          {cancelButton && <CloseButton onClick={onClose}>닫기</CloseButton>}
+        </div>
+      </ModalContainer>
+    </>
   );
 };
 
