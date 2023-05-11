@@ -2,13 +2,18 @@ import React from 'react';
 import styled from 'styled-components';
 import Text from './Text';
 import { CommentOutlined, HeartOutlined } from '@ant-design/icons';
+import { differenceInHours, differenceInMinutes } from 'date-fns';
 
 function PicCard({ width, card }) {
-  let postAtDate = new Date(card.createdAt);
+  const postAtDate = new Date(card.createdAt);
+  const currentDateTime = new Date();
+  const minutesAgo = differenceInMinutes(currentDateTime, postAtDate);
+  const hoursAgo = differenceInHours(currentDateTime, postAtDate);
+  console.log(hoursAgo);
   return (
     <Card width={width}>
       <ImageBox>
-        <img src={card.img} alt='사진 자리' />
+        <img src={card.photo_ip} alt='사진 자리' />
       </ImageBox>
       <CardBody>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -24,7 +29,7 @@ function PicCard({ width, card }) {
           </div>
 
           <Text fontSize={10} color={'#9d9d9d'}>
-            {postAtDate.toLocaleTimeString()}
+            {hoursAgo < 1 ? `${minutesAgo} 분 전` : `${hoursAgo} 시간 전`}
           </Text>
         </div>
         <TextGrop>
@@ -33,7 +38,7 @@ function PicCard({ width, card }) {
               {card.title}
             </Text>
             <Text fontSize={14} margin={5}>
-              {card.body}
+              {card.content}
             </Text>
           </div>
 
